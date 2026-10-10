@@ -80,19 +80,28 @@ class DataAnalytics:
         choice = input("Enter your choice: ")
 
         if choice == "1":
-            row = int(input("Enter row index: "))
-            col = int(input("Enter column index: "))
-
-            print("Element:", self.__arr[row, col])
+            if self.__arr.ndim == 1:
+                index = int(input("Enter index: "))
+                print("Element:", self.__arr[index])
+            else:
+                row = int(input("Enter row index: "))
+                col = int(input("Enter column index: "))
+                print("Element:", self.__arr[row, col])
 
         elif choice == "2":
-            row_start = int(input("Enter row start: "))
-            row_end = int(input("Enter row end: "))
-            col_start = int(input("Enter column start: "))
-            col_end = int(input("Enter column end: "))
+            if self.__arr.ndim == 1:
+                start = int(input("Enter start: "))
+                end = int(input("Enter end: "))
+                print("Sliced Array:")
+                print(self.__arr[start:end])
+            else:
+                row_start = int(input("Enter row start: "))
+                row_end = int(input("Enter row end: "))
+                col_start = int(input("Enter column start: "))
+                col_end = int(input("Enter column end: "))
 
-            print("Sliced Array:")
-            print(self.__arr[row_start:row_end, col_start:col_end])
+                print("Sliced Array:")
+                print(self.__arr[row_start:row_end, col_start:col_end])
 
         else:
             print("Invalid choice!")
@@ -105,30 +114,50 @@ class DataAnalytics:
         print("2. Subtraction")
         print("3. Multiplication")
         print("4. Division")
+        print("5. Dot Product")
+        print("6. Matrix Multiplication")
 
         choice = input("Enter your choice: ")
 
-        elements = list(map(int, input(
-            f"Enter {self.__arr.size} elements for second array: "
-        ).split()))
+        if choice in ["1", "2", "3", "4"]:
+            elements = list(map(int, input(
+                f"Enter {self.__arr.size} elements for second array: "
+            ).split()))
+            second_array = np.array(elements).reshape(self.__arr.shape)
 
-        second_array = np.array(elements).reshape(self.__arr.shape)
+            if choice == "1":
+                print("Addition:")
+                print(self.__arr + second_array)
+            elif choice == "2":
+                print("Subtraction:")
+                print(self.__arr - second_array)
+            elif choice == "3":
+                print("Multiplication:")
+                print(self.__arr * second_array)
+            elif choice == "4":
+                if np.any(second_array == 0):
+                    print("Cannot divide by zero!")
+                else:
+                    print("Division:")
+                    print(self.__arr / second_array)
 
-        if choice == "1":
-            print("Addition:")
-            print(self.__arr + second_array)
+        elif choice in ["5", "6"]:
+            rows = int(input("Enter rows of second array: "))
+            cols = int(input("Enter columns of second array: "))
+            elements = list(map(int, input(
+                f"Enter {rows * cols} elements for second array: "
+            ).split()))
+            second_array = np.array(elements).reshape(rows, cols)
 
-        elif choice == "2":
-            print("Subtraction:")
-            print(self.__arr - second_array)
-
-        elif choice == "3":
-            print("Multiplication:")
-            print(self.__arr * second_array)
-
-        elif choice == "4":
-            print("Division:")
-            print(self.__arr / second_array)
+            try:
+                if choice == "5":
+                    print("Dot Product:")
+                    print(np.dot(self.__arr, second_array))
+                else:
+                    print("Matrix Multiplication:")
+                    print(self.__arr @ second_array)
+            except ValueError:
+                print("Shapes do not match for this operation!")
 
         else:
             print("Invalid choice!")
@@ -176,8 +205,15 @@ class DataAnalytics:
             print(np.argwhere(self.__arr == value))
 
         elif choice == "2":
-            print("Sorted Array:")
-            print(np.sort(self.__arr))
+            order = input("1. Ascending  2. Descending: ")
+            if order == "1":
+                print("Sorted Array (Ascending):")
+                print(np.sort(self.__arr))
+            elif order == "2":
+                print("Sorted Array (Descending):")
+                print(np.sort(self.__arr)[::-1])
+            else:
+                print("Invalid choice!")
 
         elif choice == "3":
             value = int(input("Show elements greater than: "))
@@ -284,6 +320,5 @@ while True:
     elif choice == "8":
         print("Thank you for using the NumPy Analyzer!")
         break
-
-    else:
-        print("Invalid choice!")
+    else: 
+        print("Invalid choice! Please try again.")
